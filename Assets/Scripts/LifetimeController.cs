@@ -2,12 +2,13 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(Renderer))]
-public class LifetimeController : MonoBehaviour
+[RequireComponent(typeof(PoolableController))]
+public class LifetimeController : MonoBehaviour, IPoolable
 {
     [SerializeField] private float _minLifetime = 2f;
     [SerializeField] private float _maxLifetime = 5f;
 
-    private float _lifetime;
+    private float _lifetime = 0f;
     private float _age = 0f;
     
     private Renderer _renderer;
@@ -17,14 +18,15 @@ public class LifetimeController : MonoBehaviour
 
     private bool _isActivated = false;
 
+    private PoolableController _poolableController;
+
     private void Awake()
     {
-        _renderer = GetComponent<Renderer>();
         _renderer = GetComponent<Renderer>();
         _materialPropertyBlock = new MaterialPropertyBlock();
         _renderer.GetPropertyBlock(_materialPropertyBlock);
         
-        _lifetime =  + _minLifetime + Random.value * (_maxLifetime - _minLifetime);
+        _poolableController = GetComponent<PoolableController>();
     }
 
     private void Update()
@@ -33,12 +35,17 @@ public class LifetimeController : MonoBehaviour
 
         if (_age >= _lifetime)
         {
-            Destroy(gameObject);
+            _poolableController.ReleaseToPool();
         }
         
         Color currentColor = Color.Lerp(_initialColor, Color.black, _age / _lifetime);
         _materialPropertyBlock.SetColor("_Color", currentColor);
         _renderer.SetPropertyBlock(_materialPropertyBlock);
+    }
+
+    public void OnPoolGet()
+    {
+       ResetSettings();
     }
 
     public void Activate()
@@ -54,6 +61,18 @@ public class LifetimeController : MonoBehaviour
         _initialColor = GetRandomColor();
         _materialPropertyBlock.SetColor("_Color", _initialColor);
         _renderer.SetPropertyBlock(_materialPropertyBlock);
+    }
+
+    private void ResetSettings()
+    {
+        _materialPropertyBlock.SetColor("_Color", Color.white);
+        _renderer.SetPropertyBlock(_materialPropertyBlock);
+        
+        enabled = false;
+        
+        _lifetime =  + _minLifetime + Random.value * (_maxLifetime - _minLifetime);
+        _age = 0f;
+        _isActivated = false;
     }
     
     private Color GetRandomColor()

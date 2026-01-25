@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Pool;
 using Random = UnityEngine.Random;
 
 public class Spawner : MonoBehaviour
@@ -6,13 +7,14 @@ public class Spawner : MonoBehaviour
     [SerializeField] private float _width = 1f;
     [SerializeField] private float _length = 1f;
     
-    // ToDo: Поменять тип GameObject на более специализированный.
-    [SerializeField] private GameObject _spawnPrefab;
+    [SerializeField] private PoolableController _spawnPrefab;
     [SerializeField] private float _objectsPerSecond = 1f;
 
     private readonly Color _gizmoColor = Color.green;
 
     private float _delayTimer = 0f;
+
+    [SerializeField] private ObjectPool<PoolableController> _pool;
 
     private void OnDrawGizmosSelected()
     {
@@ -38,6 +40,20 @@ public class Spawner : MonoBehaviour
         }
     }
 
+    private void Awake()
+    {
+        _pool = new ObjectPool<PoolableController>(
+            () =>
+            {
+                PoolableController poolableController = Instantiate(_spawnPrefab, transform);
+                poolableController.HookToPool(_pool);
+                return poolableController;
+            },
+            poolableController => poolableController.OnGetFromPool(),
+            poolableController => poolableController.OnReleaseToPool()
+            );
+    }
+
     private void Update()
     {
         _delayTimer += Time.deltaTime;
@@ -52,8 +68,11 @@ public class Spawner : MonoBehaviour
 
         for (int objectNumber = 0; objectNumber < objectsToSpawnCounter; ++objectNumber)
         {
+            PoolableController spawnedObject = _pool.Get();
             Vector3 spawnPoint = GetRandomSpawnPosition();
-            Instantiate(_spawnPrefab, spawnPoint, _spawnPrefab.transform.rotation);
+            spawnedObject.transform.position = spawnPoint;
+            spawnedObject.transform.rotation = _spawnPrefab.transform.rotation;
+            spawnedObject.transform.localScale = _spawnPrefab.transform.localScale;
         }
     }
 

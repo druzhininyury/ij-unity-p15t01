@@ -5,7 +5,6 @@ using UnityEngine;
 public class CollideController : MonoBehaviour
 {
     private LifetimeController _lifetimeController;
-    private Renderer _renderer;
 
     private void Start()
     {
