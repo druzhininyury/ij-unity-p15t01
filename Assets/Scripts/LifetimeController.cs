@@ -15,6 +15,8 @@ public class LifetimeController : MonoBehaviour
     private Color _initialColor;
     private MaterialPropertyBlock _materialPropertyBlock;
 
+    private bool _isActivated = false;
+
     private void Awake()
     {
         _renderer = GetComponent<Renderer>();
@@ -41,6 +43,12 @@ public class LifetimeController : MonoBehaviour
 
     public void Activate()
     {
+        if (_isActivated)
+        {
+            return;
+        }
+
+        _isActivated = true;
         enabled = true;
         
         _initialColor = GetRandomColor();
@@ -50,6 +58,9 @@ public class LifetimeController : MonoBehaviour
     
     private Color GetRandomColor()
     {
-        return Random.ColorHSV();
+        float defaultSaturation = 1f;
+        float defualtValue = 1f;
+        
+        return Color.HSVToRGB(Random.value, defaultSaturation, defualtValue);
     }
 }
