@@ -1,19 +1,18 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Pool;
 using Random = UnityEngine.Random;
 
+[RequireComponent(typeof(CubePool))]
 public class Spawner : MonoBehaviour
 {
     [SerializeField] private float _width = 1f;
     [SerializeField] private float _length = 1f;
     
-    [SerializeField] private PoolableController _spawnPrefab;
     [SerializeField] private float _objectsPerSecond = 1f;
 
-    private readonly Color _gizmoColor = Color.green;
+    private CubePool _cubePool;
 
-    [SerializeField] private ObjectPool<PoolableController> _pool;
+    private readonly Color _gizmoColor = Color.green;
 
     private void OnDrawGizmosSelected()
     {
@@ -41,16 +40,7 @@ public class Spawner : MonoBehaviour
 
     private void Awake()
     {
-        _pool = new ObjectPool<PoolableController>(
-            () =>
-            {
-                PoolableController poolableController = Instantiate(_spawnPrefab, transform);
-                poolableController.HookToPool(_pool);
-                return poolableController;
-            },
-            poolableController => poolableController.OnGetFromPool(),
-            poolableController => poolableController.OnReleaseToPool()
-            );
+        _cubePool = GetComponent<CubePool>();
     }
 
     private void Start()
@@ -71,11 +61,9 @@ public class Spawner : MonoBehaviour
 
     private void Spawn()
     {
-        PoolableController spawnedObject = _pool.Get();
+        CubeController spawnedObject = _cubePool.GetCube();
         Vector3 spawnPoint = GetRandomSpawnPosition();
         spawnedObject.transform.position = spawnPoint;
-        spawnedObject.transform.rotation = _spawnPrefab.transform.rotation;
-        spawnedObject.transform.localScale = _spawnPrefab.transform.localScale;
     }
     
     private Vector3 GetRandomSpawnPosition()
