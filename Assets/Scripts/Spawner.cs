@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Pool;
 using Random = UnityEngine.Random;
@@ -11,8 +12,6 @@ public class Spawner : MonoBehaviour
     [SerializeField] private float _objectsPerSecond = 1f;
 
     private readonly Color _gizmoColor = Color.green;
-
-    private float _delayTimer = 0f;
 
     [SerializeField] private ObjectPool<PoolableController> _pool;
 
@@ -54,28 +53,31 @@ public class Spawner : MonoBehaviour
             );
     }
 
-    private void Update()
+    private void Start()
     {
-        _delayTimer += Time.deltaTime;
+        StartCoroutine(SpawnCoroutine());
+    }
 
-        if (_delayTimer < _objectsPerSecond)
-        {
-            return;
-        }
+    private IEnumerator SpawnCoroutine()
+    {
+       WaitForSeconds wait = new WaitForSeconds(_objectsPerSecond);
         
-        int objectsToSpawnCounter = (int)(_delayTimer /  _objectsPerSecond);
-        _delayTimer %= _objectsPerSecond;
-
-        for (int objectNumber = 0; objectNumber < objectsToSpawnCounter; ++objectNumber)
+        while (true)
         {
-            PoolableController spawnedObject = _pool.Get();
-            Vector3 spawnPoint = GetRandomSpawnPosition();
-            spawnedObject.transform.position = spawnPoint;
-            spawnedObject.transform.rotation = _spawnPrefab.transform.rotation;
-            spawnedObject.transform.localScale = _spawnPrefab.transform.localScale;
+            Spawn();
+            yield return wait;
         }
     }
 
+    private void Spawn()
+    {
+        PoolableController spawnedObject = _pool.Get();
+        Vector3 spawnPoint = GetRandomSpawnPosition();
+        spawnedObject.transform.position = spawnPoint;
+        spawnedObject.transform.rotation = _spawnPrefab.transform.rotation;
+        spawnedObject.transform.localScale = _spawnPrefab.transform.localScale;
+    }
+    
     private Vector3 GetRandomSpawnPosition()
     {
         float randomX = Random.value * _width - _width / 2;
