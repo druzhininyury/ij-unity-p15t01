@@ -11,8 +11,8 @@ public class CubePool : MonoBehaviour
     {
         _pool = new ObjectPool<CubeController>(
             () => Instantiate(_spawnPrefab, transform),
-            cubeController => GetCube(cubeController),
-            cubeController => ReleaseCube(cubeController)
+            cubeController => OnGetCube(cubeController),
+            cubeController => OnReleaseCube(cubeController)
         );
     }
 
@@ -21,16 +21,21 @@ public class CubePool : MonoBehaviour
         return _pool.Get();
     }
 
-    private void GetCube(CubeController cubeController)
+    private void OnGetCube(CubeController cubeController)
     {
         cubeController.gameObject.SetActive(true);
         cubeController.OnCubeRemove += ReleaseCube;
     }
     
-    private void ReleaseCube(CubeController cubeController)
+    private void OnReleaseCube(CubeController cubeController)
     {
         cubeController.Reset();
         cubeController.gameObject.SetActive(false);
         cubeController.OnCubeRemove -= ReleaseCube;
+    }
+
+    private void ReleaseCube(CubeController cubeController)
+    {
+        _pool.Release(cubeController);
     }
 }
