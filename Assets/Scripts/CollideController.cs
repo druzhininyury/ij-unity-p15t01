@@ -13,7 +13,7 @@ public class CollideController : MonoBehaviour
     
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.CompareTag("PlaneTag") == false)
+        if (other.gameObject.TryGetComponent(typeof(PlanesMarker), out Component _) == false)
         {
             return;
         }
