@@ -1,8 +1,8 @@
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-[RequireComponent(typeof(Renderer))]
 [RequireComponent(typeof(PoolableController))]
+[RequireComponent(typeof(LifetimeController))]
 public class LifetimeController : MonoBehaviour, IPoolable
 {
     [SerializeField] private float _minLifetime = 2f;
@@ -11,10 +11,7 @@ public class LifetimeController : MonoBehaviour, IPoolable
     private float _lifetime = 0f;
     private float _age = 0f;
     
-    private Renderer _renderer;
-    
-    private Color _initialColor;
-    private MaterialPropertyBlock _materialPropertyBlock;
+    private ColorController _colorController;
 
     private bool _isActivated = false;
 
@@ -22,10 +19,7 @@ public class LifetimeController : MonoBehaviour, IPoolable
 
     private void Awake()
     {
-        _renderer = GetComponent<Renderer>();
-        _materialPropertyBlock = new MaterialPropertyBlock();
-        _renderer.GetPropertyBlock(_materialPropertyBlock);
-        
+        _colorController = GetComponent<ColorController>();
         _poolableController = GetComponent<PoolableController>();
     }
 
@@ -38,9 +32,7 @@ public class LifetimeController : MonoBehaviour, IPoolable
             _poolableController.ReleaseToPool();
         }
         
-        Color currentColor = Color.Lerp(_initialColor, Color.black, _age / _lifetime);
-        _materialPropertyBlock.SetColor("_Color", currentColor);
-        _renderer.SetPropertyBlock(_materialPropertyBlock);
+        _colorController.LerpToBlack(_age / _lifetime);
     }
 
     public void OnPoolGet()
@@ -58,28 +50,17 @@ public class LifetimeController : MonoBehaviour, IPoolable
         _isActivated = true;
         enabled = true;
         
-        _initialColor = GetRandomColor();
-        _materialPropertyBlock.SetColor("_Color", _initialColor);
-        _renderer.SetPropertyBlock(_materialPropertyBlock);
+        _colorController.SetRandomColor();
     }
 
     private void ResetSettings()
     {
-        _materialPropertyBlock.SetColor("_Color", Color.white);
-        _renderer.SetPropertyBlock(_materialPropertyBlock);
+        _colorController.Reset();
         
         enabled = false;
         
         _lifetime =  + _minLifetime + Random.value * (_maxLifetime - _minLifetime);
         _age = 0f;
         _isActivated = false;
-    }
-    
-    private Color GetRandomColor()
-    {
-        float defaultSaturation = 1f;
-        float defualtValue = 1f;
-        
-        return Color.HSVToRGB(Random.value, defaultSaturation, defualtValue);
     }
 }
