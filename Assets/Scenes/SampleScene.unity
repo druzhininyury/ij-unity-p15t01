@@ -228,9 +228,10 @@ GameObject:
   - component: {fileID: 773994720}
   - component: {fileID: 773994719}
   - component: {fileID: 773994718}
+  - component: {fileID: 773994721}
   m_Layer: 0
   m_Name: MainPlane
-  m_TagString: PlaneTag
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -322,6 +323,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 773994716}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &773994721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 773994716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aa10951f73e36645bb8c972ace83b4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -426,9 +439,10 @@ GameObject:
   - component: {fileID: 1283302044}
   - component: {fileID: 1283302043}
   - component: {fileID: 1283302042}
+  - component: {fileID: 1283302045}
   m_Layer: 0
   m_Name: InclinedPlane
-  m_TagString: PlaneTag
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -520,6 +534,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1283302040}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1283302045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1283302040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aa10951f73e36645bb8c972ace83b4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1501993203
 GameObject:
   m_ObjectHideFlags: 0
@@ -563,6 +589,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1983445720}
   - component: {fileID: 1983445721}
+  - component: {fileID: 1983445722}
   m_Layer: 0
   m_Name: Spawner
   m_TagString: Untagged
@@ -599,8 +626,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _width: 10
   _length: 10
-  _spawnPrefab: {fileID: -5157850444977947387, guid: 51b6e87b105991c41be76d033bdf3e2e, type: 3}
   _objectsPerSecond: 1
+--- !u!114 &1983445722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1983445719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e87518659862a04ea4d5cab8e227415, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _spawnPrefab: {fileID: -7511373445850881786, guid: 51b6e87b105991c41be76d033bdf3e2e, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

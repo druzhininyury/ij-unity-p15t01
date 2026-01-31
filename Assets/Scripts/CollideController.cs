@@ -1,24 +1,37 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Collider))]
-[RequireComponent(typeof(LifetimeController))]
-public class CollideController : MonoBehaviour
+public class CollideController
 {
+    private ColorController _colorController;
     private LifetimeController _lifetimeController;
 
-    private void Start()
+    private bool _hasFirstTouch = false;
+
+    public CollideController(ColorController colorController, LifetimeController lifetimeController)
     {
-        _lifetimeController = GetComponent<LifetimeController>();
+        _colorController = colorController;
+        _lifetimeController = lifetimeController;
     }
     
-    private void OnCollisionEnter(Collision other)
+    public void ProcessCollision(Collision other)
     {
-        if (other.gameObject.TryGetComponent(typeof(PlanesMarker), out Component _) == false)
+        if (_hasFirstTouch)
         {
             return;
         }
         
-        _lifetimeController.Activate();
-        enabled = false;
+        if (other.gameObject.TryGetComponent(typeof(PlanesMarker), out Component _) == false)
+        {
+            return;
+        }
+
+        _hasFirstTouch = true;
+        _colorController.SetRandomColor();
+        _lifetimeController.ActivateLifetimeCountdown();
+    }
+
+    public void Reset()
+    {
+        _hasFirstTouch = false;
     }
 }

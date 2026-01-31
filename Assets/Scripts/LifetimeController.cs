@@ -1,66 +1,54 @@
+using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-[RequireComponent(typeof(PoolableController))]
-[RequireComponent(typeof(LifetimeController))]
-public class LifetimeController : MonoBehaviour, IPoolable
+[Serializable]
+public class LifetimeController
 {
     [SerializeField] private float _minLifetime = 2f;
     [SerializeField] private float _maxLifetime = 5f;
 
     private float _lifetime = 0f;
     private float _age = 0f;
-    
-    private ColorController _colorController;
-
     private bool _isActivated = false;
 
-    private PoolableController _poolableController;
+    private Action ReleaseCube;
+    private ColorController _colorController;
 
-    private void Awake()
+    public LifetimeController(Action ReleaseCubeAction, ColorController colorController)
     {
-        _colorController = GetComponent<ColorController>();
-        _poolableController = GetComponent<PoolableController>();
+        ReleaseCube = ReleaseCubeAction;
+        _colorController = colorController;
+
+        Reset();
     }
 
-    private void Update()
+    public void ActivateLifetimeCountdown()
     {
-        _age += Time.deltaTime;
+        _isActivated = true;
+    }
+
+    public void ProcessUpdate(float deltaTime)
+    {
+        if (_isActivated == false)
+        {
+            return;
+        }
+        
+        _age += deltaTime;
 
         if (_age >= _lifetime)
         {
-            _poolableController.ReleaseToPool();
+            ReleaseCube();
         }
         
         _colorController.LerpToBlack(_age / _lifetime);
     }
 
-    public void OnPoolGet()
+    public void Reset()
     {
-       ResetSettings();
-    }
-
-    public void Activate()
-    {
-        if (_isActivated)
-        {
-            return;
-        }
-
-        _isActivated = true;
-        enabled = true;
-        
-        _colorController.SetRandomColor();
-    }
-
-    private void ResetSettings()
-    {
-        _colorController.Reset();
-        
-        enabled = false;
-        
-        _lifetime =  + _minLifetime + Random.value * (_maxLifetime - _minLifetime);
-        _age = 0f;
+        _lifetime = _minLifetime + Random.value * (_maxLifetime - _minLifetime);
+        _age = 0;
         _isActivated = false;
     }
 }
