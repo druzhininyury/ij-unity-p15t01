@@ -1,16 +1,16 @@
 using UnityEngine;
 
-public class CollideController
+public class Collide
 {
-    private ColorController _colorController;
-    private LifetimeController _lifetimeController;
+    private Color _color;
+    private Lifetime _lifetime;
 
     private bool _hasFirstTouch = false;
 
-    public CollideController(ColorController colorController, LifetimeController lifetimeController)
+    public Collide(Color color, Lifetime lifetime)
     {
-        _colorController = colorController;
-        _lifetimeController = lifetimeController;
+        _color = color;
+        _lifetime = lifetime;
     }
     
     public void ProcessCollision(Collision other)
@@ -26,8 +26,8 @@ public class CollideController
         }
 
         _hasFirstTouch = true;
-        _colorController.SetRandomColor();
-        _lifetimeController.ActivateLifetimeCountdown();
+        _color.SetRandomColor();
+        _lifetime.ActivateLifetimeCountdown();
     }
 
     public void Reset()

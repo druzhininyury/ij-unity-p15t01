@@ -8,12 +8,12 @@ public class Spawner : MonoBehaviour
     [SerializeField] private float _width = 1f;
     [SerializeField] private float _length = 1f;
     
-    [SerializeField] private CubeController _spawnPrefab;
+    [SerializeField] private Cube _spawnPrefab;
     [SerializeField] private float _objectsPerSecond = 1f;
 
-    private readonly Color _gizmoColor = Color.green;
+    private readonly UnityEngine.Color _gizmoColor = UnityEngine.Color.green;
     
-    private ObjectPool<CubeController> _pool;
+    private ObjectPool<Cube> _pool;
 
     private void OnDrawGizmosSelected()
     {
@@ -41,7 +41,7 @@ public class Spawner : MonoBehaviour
 
     private void Awake()
     {
-        _pool = new ObjectPool<CubeController>(
+        _pool = new ObjectPool<Cube>(
             () => Instantiate(_spawnPrefab, transform),
             cubeController => OnGetCube(cubeController),
             cubeController => OnReleaseCube(cubeController)
@@ -66,7 +66,7 @@ public class Spawner : MonoBehaviour
 
     private void Spawn()
     {
-        CubeController spawnedObject = _pool.Get();
+        Cube spawnedObject = _pool.Get();
         Vector3 spawnPoint = GetRandomSpawnPosition();
         spawnedObject.transform.position = spawnPoint;
     }
@@ -78,21 +78,21 @@ public class Spawner : MonoBehaviour
         return transform.TransformPoint(new Vector3(randomX, 0f, randomZ));
     }
 
-    private void OnGetCube(CubeController cubeController)
+    private void OnGetCube(Cube cube)
     {
-        cubeController.gameObject.SetActive(true);
-        cubeController.CubeRemoved += ReleaseCube;
+        cube.gameObject.SetActive(true);
+        cube.CubeRemoved += ReleaseCube;
     }
     
-    private void OnReleaseCube(CubeController cubeController)
+    private void OnReleaseCube(Cube cube)
     {
-        cubeController.Reset();
-        cubeController.gameObject.SetActive(false);
-        cubeController.CubeRemoved -= ReleaseCube;
+        cube.Reset();
+        cube.gameObject.SetActive(false);
+        cube.CubeRemoved -= ReleaseCube;
     }
 
-    private void ReleaseCube(CubeController cubeController)
+    private void ReleaseCube(Cube cube)
     {
-        _pool.Release(cubeController);
+        _pool.Release(cube);
     }
 }

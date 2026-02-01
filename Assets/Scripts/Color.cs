@@ -1,14 +1,14 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Renderer))]
-public class ColorController : MonoBehaviour
+public class Color : MonoBehaviour
 {
-    private readonly Color _initialColor = Color.white;
+    private readonly UnityEngine.Color _initialColor = UnityEngine.Color.white;
     
     private Renderer _renderer;
     
     private int _colorNameId = Shader.PropertyToID("_Color");
-    private Color _baseColor;
+    private UnityEngine.Color _baseColor;
     private MaterialPropertyBlock _materialPropertyBlock;
     
     private void Awake()
@@ -33,16 +33,16 @@ public class ColorController : MonoBehaviour
 
     public void LerpToBlack(float value)
     {
-        Color currentColor = Color.Lerp(_baseColor, Color.black, value);
+        UnityEngine.Color currentColor = UnityEngine.Color.Lerp(_baseColor, UnityEngine.Color.black, value);
         _materialPropertyBlock.SetColor(_colorNameId, currentColor);
         _renderer.SetPropertyBlock(_materialPropertyBlock);
     }
     
-    private Color GetRandomColor()
+    private UnityEngine.Color GetRandomColor()
     {
         float defaultSaturation = 1f;
         float defualtValue = 1f;
         
-        return Color.HSVToRGB(Random.value, defaultSaturation, defualtValue);
+        return UnityEngine.Color.HSVToRGB(Random.value, defaultSaturation, defualtValue);
     }
 }

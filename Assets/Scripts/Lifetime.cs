@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class LifetimeController
+public class Lifetime
 {
     private float _minLifetime;
     private float _maxLifetime;
@@ -14,19 +14,19 @@ public class LifetimeController
 
     private ICoroutineRunner _coroutineRunner;
     private Action ReleaseCube;
-    private ColorController _colorController;
+    private Color _color;
 
-    public LifetimeController(
+    public Lifetime(
         ICoroutineRunner coroutineRunner,
         Action ReleaseCubeAction, 
-        ColorController colorController,
+        Color color,
         float minLifetime = 2f,
         float maxLifetime = 5f
         )
     {
         _coroutineRunner = coroutineRunner;
         ReleaseCube = ReleaseCubeAction;
-        _colorController = colorController;
+        _color = color;
         _minLifetime = minLifetime;
         _maxLifetime = maxLifetime;
 
@@ -56,7 +56,7 @@ public class LifetimeController
                 break;
             }
             
-            _colorController.LerpToBlack(_age / _lifetime);
+            _color.LerpToBlack(_age / _lifetime);
             yield return null;
         }
     }

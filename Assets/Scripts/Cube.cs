@@ -1,41 +1,41 @@
 using System;
 using UnityEngine;
 
-[RequireComponent(typeof(ColorController))]
+[RequireComponent(typeof(Color))]
 [RequireComponent(typeof(Rigidbody))]
-public class CubeController : MonoBehaviour, ICoroutineRunner
+public class Cube : MonoBehaviour, ICoroutineRunner
 {
     [SerializeField] private float _scale = 0.5f;
     
-    private LifetimeController _lifetimeController;
-    private ColorController _colorController;
+    private Lifetime _lifetime;
+    private Color _color;
     private Rigidbody _rigidbody;
-    private CollideController _collideController;
+    private Collide _collide;
 
-    public event Action<CubeController> CubeRemoved;
+    public event Action<Cube> CubeRemoved;
 
     private void Awake()
     {
-        _colorController = GetComponent<ColorController>();
+        _color = GetComponent<Color>();
         _rigidbody = GetComponent<Rigidbody>();
-        _lifetimeController = new LifetimeController(this, () => CubeRemoved?.Invoke(this), _colorController);
-        _collideController = new CollideController(_colorController, _lifetimeController);
+        _lifetime = new Lifetime(this, () => CubeRemoved?.Invoke(this), _color);
+        _collide = new Collide(_color, _lifetime);
 
         Reset();
     }
 
     private void OnCollisionEnter(Collision other)
     {
-        _collideController.ProcessCollision(other);
+        _collide.ProcessCollision(other);
     }
 
     public void Reset()
     {
         ResetTransform();
         ResetRigidbody();
-        _colorController.Reset();
-        _collideController.Reset();
-        _lifetimeController.Reset();
+        _color.Reset();
+        _collide.Reset();
+        _lifetime.Reset();
     }
 
     private void ResetTransform()
