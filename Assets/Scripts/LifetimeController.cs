@@ -2,11 +2,10 @@ using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-[Serializable]
 public class LifetimeController
 {
-    [SerializeField] private float _minLifetime = 2f;
-    [SerializeField] private float _maxLifetime = 5f;
+    private float _minLifetime;
+    private float _maxLifetime;
 
     private float _lifetime = 0f;
     private float _age = 0f;
@@ -15,10 +14,17 @@ public class LifetimeController
     private Action ReleaseCube;
     private ColorController _colorController;
 
-    public LifetimeController(Action ReleaseCubeAction, ColorController colorController)
+    public LifetimeController(
+        Action ReleaseCubeAction, 
+        ColorController colorController,
+        float minLifetime = 2f,
+        float maxLifetime = 5f
+        )
     {
         ReleaseCube = ReleaseCubeAction;
         _colorController = colorController;
+        _minLifetime = minLifetime;
+        _maxLifetime = maxLifetime;
 
         Reset();
     }
