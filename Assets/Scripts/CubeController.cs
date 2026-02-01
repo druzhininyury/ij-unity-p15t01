@@ -3,11 +3,11 @@ using UnityEngine;
 
 [RequireComponent(typeof(ColorController))]
 [RequireComponent(typeof(Rigidbody))]
-public class CubeController : MonoBehaviour
+public class CubeController : MonoBehaviour, ICoroutineRunner
 {
     [SerializeField] private float _scale = 0.5f;
-    [SerializeField] private LifetimeController _lifetimeController;
-
+    
+    private LifetimeController _lifetimeController;
     private ColorController _colorController;
     private Rigidbody _rigidbody;
     private CollideController _collideController;
@@ -18,15 +18,10 @@ public class CubeController : MonoBehaviour
     {
         _colorController = GetComponent<ColorController>();
         _rigidbody = GetComponent<Rigidbody>();
-        _lifetimeController = new LifetimeController(() => CubeRemoved?.Invoke(this), _colorController);
+        _lifetimeController = new LifetimeController(this, () => CubeRemoved?.Invoke(this), _colorController);
         _collideController = new CollideController(_colorController, _lifetimeController);
 
         Reset();
-    }
-
-    private void Update()
-    {
-        _lifetimeController.ProcessUpdate(Time.deltaTime);
     }
 
     private void OnCollisionEnter(Collision other)

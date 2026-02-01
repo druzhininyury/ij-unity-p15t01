@@ -10,9 +10,9 @@ public class Spawner : MonoBehaviour
     
     [SerializeField] private float _objectsPerSecond = 1f;
 
-    private CubePool _cubePool;
-
     private readonly Color _gizmoColor = Color.green;
+    
+    private CubePool _cubePool;
 
     private void OnDrawGizmosSelected()
     {

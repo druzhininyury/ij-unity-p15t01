@@ -3,10 +3,11 @@ using UnityEngine;
 [RequireComponent(typeof(Renderer))]
 public class ColorController : MonoBehaviour
 {
+    private readonly Color _initialColor = Color.white;
+    
     private Renderer _renderer;
     
     private int _colorNameId = Shader.PropertyToID("_Color");
-    private readonly Color _initialColor = Color.white;
     private Color _baseColor;
     private MaterialPropertyBlock _materialPropertyBlock;
     
