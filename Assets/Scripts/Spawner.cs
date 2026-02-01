@@ -1,18 +1,19 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Pool;
 using Random = UnityEngine.Random;
 
-[RequireComponent(typeof(CubePool))]
 public class Spawner : MonoBehaviour
 {
     [SerializeField] private float _width = 1f;
     [SerializeField] private float _length = 1f;
     
+    [SerializeField] private CubeController _spawnPrefab;
     [SerializeField] private float _objectsPerSecond = 1f;
 
     private readonly Color _gizmoColor = Color.green;
     
-    private CubePool _cubePool;
+    private ObjectPool<CubeController> _pool;
 
     private void OnDrawGizmosSelected()
     {
@@ -40,7 +41,11 @@ public class Spawner : MonoBehaviour
 
     private void Awake()
     {
-        _cubePool = GetComponent<CubePool>();
+        _pool = new ObjectPool<CubeController>(
+            () => Instantiate(_spawnPrefab, transform),
+            cubeController => OnGetCube(cubeController),
+            cubeController => OnReleaseCube(cubeController)
+        );
     }
 
     private void Start()
@@ -61,7 +66,7 @@ public class Spawner : MonoBehaviour
 
     private void Spawn()
     {
-        CubeController spawnedObject = _cubePool.GetCube();
+        CubeController spawnedObject = _pool.Get();
         Vector3 spawnPoint = GetRandomSpawnPosition();
         spawnedObject.transform.position = spawnPoint;
     }
@@ -71,5 +76,23 @@ public class Spawner : MonoBehaviour
         float randomX = Random.value * _width - _width / 2;
         float randomZ = Random.value * _length - _length / 2;
         return transform.TransformPoint(new Vector3(randomX, 0f, randomZ));
+    }
+
+    private void OnGetCube(CubeController cubeController)
+    {
+        cubeController.gameObject.SetActive(true);
+        cubeController.CubeRemoved += ReleaseCube;
+    }
+    
+    private void OnReleaseCube(CubeController cubeController)
+    {
+        cubeController.Reset();
+        cubeController.gameObject.SetActive(false);
+        cubeController.CubeRemoved -= ReleaseCube;
+    }
+
+    private void ReleaseCube(CubeController cubeController)
+    {
+        _pool.Release(cubeController);
     }
 }
