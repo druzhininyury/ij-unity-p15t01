@@ -24,14 +24,14 @@ public class CubePool : MonoBehaviour
     private void OnGetCube(CubeController cubeController)
     {
         cubeController.gameObject.SetActive(true);
-        cubeController.OnCubeRemove += ReleaseCube;
+        cubeController.CubeRemoved += ReleaseCube;
     }
     
     private void OnReleaseCube(CubeController cubeController)
     {
         cubeController.Reset();
         cubeController.gameObject.SetActive(false);
-        cubeController.OnCubeRemove -= ReleaseCube;
+        cubeController.CubeRemoved -= ReleaseCube;
     }
 
     private void ReleaseCube(CubeController cubeController)

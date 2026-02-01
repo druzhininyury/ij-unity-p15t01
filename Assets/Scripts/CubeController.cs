@@ -6,19 +6,19 @@ using UnityEngine;
 public class CubeController : MonoBehaviour
 {
     [SerializeField] private float _scale = 0.5f;
+    [SerializeField] private LifetimeController _lifetimeController;
 
     private ColorController _colorController;
     private Rigidbody _rigidbody;
     private CollideController _collideController;
-    [SerializeField] private LifetimeController _lifetimeController;
-    
-    public event Action<CubeController> OnCubeRemove;
+
+    public event Action<CubeController> CubeRemoved;
 
     private void Awake()
     {
         _colorController = GetComponent<ColorController>();
         _rigidbody = GetComponent<Rigidbody>();
-        _lifetimeController = new LifetimeController(() => OnCubeRemove?.Invoke(this), _colorController);
+        _lifetimeController = new LifetimeController(() => CubeRemoved?.Invoke(this), _colorController);
         _collideController = new CollideController(_colorController, _lifetimeController);
 
         Reset();
